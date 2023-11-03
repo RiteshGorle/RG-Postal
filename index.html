@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Postal Code Information</title>
+
+<!--%%%%%%%%%%%%%%%%%%%%%%%%%%=>  WebSite page Name: Postal Code Info <=%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
+<!--%%%%%%%%%%%%%%%%%%%%%%%%%%=>     Made by: Ritesh Gorle            <=%%%%%%%%%%%%%%%%%%%%%%%%%%%%%--> 
+<!--%%%%%%%%%%%%%%%%%%%%%%%%%%=>     Created: Nov 2023                <=%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
+<!--%%%%%%%%%%%%%%%%%%%%%%%%%%=>     Content: Postal  Info            <=%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
+
+
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .container {
+      margin: 20px auto;
+      padding: 20px;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    input {
+      padding: 8px;
+      margin: 5px;
+    }
+    button {
+      padding: 8px 20px;
+      margin: 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Postal Code Information</h1>
+    <input type="text" id="postalCodeInput" placeholder="Enter Postal Code">
+    <button onclick="fetchLocationInfo()">Get Location</button>
+    <p id="loadingText" style="display: none;">Loading...</p>
+    <p id="errorText" class="error" style="display: none;"></p>
+    <div id="locationInfo" style="display: none;">
+      <h2>Location Information</h2>
+      <p>Country: <span id="country"></span></p>
+      <p>State: <span id="state"></span></p>
+      <p>Place Name: <span id="placeName"></span></p>
+    </div>
+  </div>
+
+  <script>
+    async function fetchLocationInfo() {
+      const postalCode = document.getElementById('postalCodeInput').value;
+      const loadingText = document.getElementById('loadingText');
+      const errorText = document.getElementById('errorText');
+      const locationInfo = document.getElementById('locationInfo');
+
+      loadingText.style.display = 'block';
+      errorText.style.display = 'none';
+      locationInfo.style.display = 'none';
+
+      if (postalCode) {
+        try {
+          const response = await fetch(`https://api.zippopotam.us/in/400093`);
+          if (response.ok) {
+            const data = await response.json();
+            displayLocationInfo(data);
+          } else {
+            errorText.style.display = 'block';
+            errorText.textContent = 'Failed to fetch data';
+          }
+        } catch (error) {
+          errorText.style.display = 'block';
+          errorText.textContent = 'An error occurred while fetching data';
+        }
+      } else {
+        errorText.style.display = 'block';
+        errorText.textContent = 'Please enter a postal code';
+      }
+
+      loadingText.style.display = 'none';
+    }
+
+    function displayLocationInfo(data) {
+      document.getElementById('country').textContent = data.country;
+      document.getElementById('state').textContent = data.state;
+      document.getElementById('placeName').textContent = data.places[0]['place name'];
+
+      document.getElementById('locationInfo').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
